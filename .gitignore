@@ -1,0 +1,25 @@
+# Secret
+.env
+*.env
+*.pem
+*.key
+secrets/
+
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+
+# Node / React
+node_modules/
+dist/
+build/
+.npm/
+
+# IDE
+.vscode/
+.idea/
