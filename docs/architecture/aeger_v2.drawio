@@ -1,0 +1,308 @@
+<mxfile host="Electron">
+  <diagram id="wr1jR8cTdGdMgQ0I_N8H" name="Page-1">
+    <mxGraphModel dx="1604" dy="875" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1240" pageHeight="1800" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;" value="&lt;b&gt;&lt;font style=&quot;font-size:22px&quot;&gt;AEGER · Architecture v2&lt;/font&gt;&lt;/b&gt;&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="380" x="80" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="load" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b3b3b3;align=left;verticalAlign=middle;spacing=10;fontSize=12;fontColor=#333333;" value="&lt;b&gt;Charge&lt;/b&gt; · 1 000 patients à haut risque → 200 msg/s (17,3 M/jour) · 9 000 patients standards → batch horaire + anomalies · &lt;b&gt;alerte affichée en moins de 5 s&lt;/b&gt;" vertex="1">
+          <mxGeometry height="60" width="680" x="470" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="t1" parent="1" style="rounded=1;arcSize=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=12;spacingTop=6;fontSize=13;fontStyle=1;fontColor=#666666;" value="TIER 1 · RÉSEAU EXTERNE&amp;nbsp;" vertex="1">
+          <mxGeometry height="155" width="1070" x="80" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="t2" parent="1" style="rounded=1;arcSize=1;whiteSpace=wrap;html=1;fillColor=#fff4e6;strokeColor=#d79b00;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=12;spacingTop=6;fontSize=13;fontStyle=1;fontColor=#b46504;" value="TIER 2 · VLAN 10 DMZ · réseau : ____ · seule zone joignable de l&#39;extérieur" vertex="1">
+          <mxGeometry height="300" width="800" x="80" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="tSec" parent="1" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#fff8e1;strokeColor=#b8860b;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=12;spacingTop=6;fontSize=13;fontStyle=1;fontColor=#8c6d00;" value="VLAN 20 SÉCURITÉ · réseau : ____" vertex="1">
+          <mxGeometry height="300" width="240" x="910" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="t3" parent="1" style="rounded=1;arcSize=1;whiteSpace=wrap;html=1;fillColor=#fdeeee;strokeColor=#b85450;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=12;spacingTop=6;fontSize=13;fontStyle=1;fontColor=#b85450;" value="TIER 3 · VLAN 30 TEMPS RÉEL (hot) · réseau : ____" vertex="1">
+          <mxGeometry height="370" width="800" x="80" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="t4" parent="1" style="rounded=1;arcSize=1;whiteSpace=wrap;html=1;fillColor=#f4effa;strokeColor=#9673a6;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=12;spacingTop=6;fontSize=13;fontStyle=1;fontColor=#7a5a8f;" value="TIER 4 · VLAN 40 DONNÉES · réseau : ____" vertex="1">
+          <mxGeometry height="235" width="800" x="80" y="1040" as="geometry" />
+        </mxCell>
+        <mxCell id="t5" parent="1" style="rounded=1;arcSize=1;whiteSpace=wrap;html=1;fillColor=#eef4fc;strokeColor=#6c8ebf;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=12;spacingTop=6;fontSize=13;fontStyle=1;fontColor=#3d6ba3;" value="TIER 5 · VLAN 50 ANALYTIQUE (cold) · réseau : ____ · batch 1× / jour" vertex="1">
+          <mxGeometry height="435" width="800" x="80" y="1325" as="geometry" />
+        </mxCell>
+        <mxCell id="vmEdge" parent="1" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;dashed=1;dashPattern=8 4;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontStyle=1;fontColor=#333333;" value="🖥 VM-EDGE-01 · IP : ____ · Docker" vertex="1">
+          <mxGeometry height="245" width="760" x="100" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="vmSec" parent="1" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b8860b;dashed=1;dashPattern=8 4;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontStyle=1;fontColor=#333333;" value="🖥 VM-SEC-01 · IP : ____ · Docker" vertex="1">
+          <mxGeometry height="245" width="210" x="925" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="vmHot1" parent="1" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;dashed=1;dashPattern=8 4;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontStyle=1;fontColor=#333333;" value="🖥 VM-HOT-01 · IP : ____ · Docker" vertex="1">
+          <mxGeometry height="315" width="230" x="100" y="675" as="geometry" />
+        </mxCell>
+        <mxCell id="vmHot2" parent="1" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;dashed=1;dashPattern=8 4;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontStyle=1;fontColor=#333333;" value="🖥 VM-HOT-02 · IP : ____ · Docker" vertex="1">
+          <mxGeometry height="315" width="230" x="370" y="675" as="geometry" />
+        </mxCell>
+        <mxCell id="vmHot3" parent="1" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;dashed=1;dashPattern=8 4;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontStyle=1;fontColor=#333333;" value="🖥 VM-HOT-03 · IP : ____ · Docker" vertex="1">
+          <mxGeometry height="155" width="230" x="630" y="675" as="geometry" />
+        </mxCell>
+        <mxCell id="vmData1" parent="1" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;dashed=1;dashPattern=8 4;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontStyle=1;fontColor=#333333;" value="🖥 VM-KAFKA-01 · IP : ____&amp;nbsp;" vertex="1">
+          <mxGeometry height="180" width="500" x="100" y="1075" as="geometry" />
+        </mxCell>
+        <mxCell id="vmData2" parent="1" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;dashed=1;dashPattern=8 4;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontStyle=1;fontColor=#333333;" value="🖥 VM-DB-01 · IP : ____ ·&amp;nbsp;" vertex="1">
+          <mxGeometry height="180" width="230" x="630" y="1075" as="geometry" />
+        </mxCell>
+        <mxCell id="vmCold1" parent="1" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;dashed=1;dashPattern=8 4;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontStyle=1;fontColor=#333333;" value="🖥 VM-COLD-01 · IP : ____ · Docker" vertex="1">
+          <mxGeometry height="145" width="230" x="100" y="1380" as="geometry" />
+        </mxCell>
+        <mxCell id="vmCold2" parent="1" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;dashed=1;dashPattern=8 4;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontStyle=1;fontColor=#333333;" value="🖥 VM-COLD-02 · IP : ____ · Docker" vertex="1">
+          <mxGeometry height="185" width="230" x="370" y="1545" as="geometry" />
+        </mxCell>
+        <mxCell id="vmCold3" parent="1" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;dashed=1;dashPattern=8 4;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontStyle=1;fontColor=#333333;" value="🖥 VM-COLD-03 · IP : ____ · Docker" vertex="1">
+          <mxGeometry height="145" width="230" x="370" y="1380" as="geometry" />
+        </mxCell>
+        <mxCell id="vmCold4" parent="1" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;dashed=1;dashPattern=8 4;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontStyle=1;fontColor=#333333;" value="🖥 VM-COLD-04 · IP : ____ · Docker" vertex="1">
+          <mxGeometry height="145" width="230" x="630" y="1380" as="geometry" />
+        </mxCell>
+        <mxCell id="hr" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;fontSize=12;fontColor=#333333;" value="&lt;b&gt;Bracelets haut risque&lt;/b&gt; (simulés)&lt;br&gt;1 000 patients · 1 mesure / 5 s&lt;br&gt;MQTT · certificat X.509 par bracelet" vertex="1">
+          <mxGeometry height="100" width="172" x="107" y="145" as="geometry" />
+        </mxCell>
+        <mxCell id="std" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;fontSize=12;fontColor=#333333;" value="&lt;b&gt;Bracelets standards&lt;/b&gt; (simulés)&lt;br&gt;9 000 patients · batch horaire + anomalies&lt;br&gt;HTTPS · certificat X.509 par bracelet" vertex="1">
+          <mxGeometry height="100" width="172" x="291" y="145" as="geometry" />
+        </mxCell>
+        <mxCell id="ana" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontColor=#333333;" value="&lt;b&gt;Analyste&lt;/b&gt; · navigateur&lt;br&gt;tableaux de bord KPI (Grafana)" vertex="1">
+          <mxGeometry height="100" width="172" x="475" y="145" as="geometry" />
+        </mxCell>
+        <mxCell id="doc" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontColor=#333333;" value="&lt;b&gt;Médecin&lt;/b&gt; · navigateur&lt;br&gt;application web [React] :&lt;br&gt;alertes en temps réel + historique patient" vertex="1">
+          <mxGeometry height="100" width="172" x="659" y="145" as="geometry" />
+        </mxCell>
+        <mxCell id="nginx" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;strokeWidth=2;fontSize=12;fontColor=#333333;" value="&lt;b&gt;NGINX · reverse proxy&lt;/b&gt; — point d&#39;entrée unique&lt;br&gt;443 navigateurs : termine le TLS, route vers notification · vitals · grafana · keycloak · fichiers de l&#39;application web  ·  8443 bracelets standards : TLS + certificat client exigé (🔒 mTLS) → ingestion  ·  8883 : relais TCP vers mosquitto, TLS non terminé&lt;br&gt;&lt;font style=&#39;font-size:10px&#39; color=&#39;#1d63ed&#39;&gt;🐳 Conteneur Docker&lt;/font&gt;" vertex="1">
+          <mxGeometry height="110" width="730" x="115" y="465" as="geometry" />
+        </mxCell>
+        <mxCell id="vault" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#b8860b;strokeWidth=2;fontSize=11;fontColor=#333333;" value="&lt;b&gt;HashiCorp Vault&lt;/b&gt; · 8200&lt;br&gt;autorité de certification (PKI)&lt;br&gt;+ secrets&lt;br&gt;&lt;font style=&#39;font-size:10px&#39; color=&#39;#1d63ed&#39;&gt;🐳 Conteneur Docker&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="180" x="940" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="kc" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#b8860b;strokeWidth=2;fontSize=11;fontColor=#333333;" value="&lt;b&gt;Keycloak&lt;/b&gt; · 8443&lt;br&gt;fournisseur d&#39;identité (OIDC)&lt;br&gt;connecte médecins et analystes&lt;br&gt;&lt;font style=&#39;font-size:10px&#39; color=&#39;#1d63ed&#39;&gt;🐳 Conteneur Docker&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="180" x="940" y="385" as="geometry" />
+        </mxCell>
+        <mxCell id="mq" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontColor=#333333;" value="&lt;b&gt;mosquitto&lt;/b&gt; · broker MQTT · 8883&lt;br&gt;termine le TLS&lt;br&gt;&lt;b&gt;vérifie le certificat du bracelet&lt;/b&gt;&lt;br&gt;ACL : 1 topic par bracelet&lt;br&gt;&lt;font style=&#39;font-size:10px&#39; color=&#39;#1d63ed&#39;&gt;🐳 Conteneur Docker&lt;/font&gt;" vertex="1">
+          <mxGeometry height="110" width="200" x="115" y="705" as="geometry" />
+        </mxCell>
+        <mxCell id="ing" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontColor=#333333;" value="&lt;b&gt;ingestion&lt;/b&gt; · 8000&lt;br&gt;valide et dédoublonne les mesures&lt;br&gt;[FastAPI]&lt;br&gt;&lt;font style=&#39;font-size:10px&#39; color=&#39;#1d63ed&#39;&gt;🐳 Conteneur Docker&lt;/font&gt;" vertex="1">
+          <mxGeometry height="110" width="200" x="115" y="865" as="geometry" />
+        </mxCell>
+        <mxCell id="al" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=3;fontSize=12;fontColor=#333333;" value="&lt;b&gt;alerting&lt;/b&gt;&lt;br&gt;compare chaque mesure aux seuils&lt;br&gt;[FastAPI]&lt;br&gt;&lt;font style=&#39;font-size:10px&#39; color=&#39;#1d63ed&#39;&gt;🐳 Conteneur Docker&lt;/font&gt;" vertex="1">
+          <mxGeometry height="110" width="200" x="385" y="865" as="geometry" />
+        </mxCell>
+        <mxCell id="no" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontColor=#333333;" value="&lt;b&gt;notification&lt;/b&gt; · 8000&lt;br&gt;pousse l&#39;alerte au médecin (WebSocket)&lt;br&gt;vérifie le jeton OIDC · [FastAPI]&lt;br&gt;&lt;font style=&#39;font-size:10px&#39; color=&#39;#1d63ed&#39;&gt;🐳 Conteneur Docker&lt;/font&gt;" vertex="1">
+          <mxGeometry height="110" width="200" x="385" y="705" as="geometry" />
+        </mxCell>
+        <mxCell id="vit" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontColor=#333333;" value="&lt;b&gt;vitals&lt;/b&gt; · 8000&lt;br&gt;enregistre les mesures, sert l&#39;historique&lt;br&gt;vérifie le jeton OIDC · [FastAPI]&lt;br&gt;&lt;font style=&#39;font-size:10px&#39; color=&#39;#1d63ed&#39;&gt;🐳 Conteneur Docker&lt;/font&gt;" vertex="1">
+          <mxGeometry height="110" width="200" x="645" y="705" as="geometry" />
+        </mxCell>
+        <mxCell id="kafka" parent="1" style="shape=process;size=0.03;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontSize=12;fontColor=#333333;" value="&lt;b&gt;Apache Kafka 4.3 · mode KRaft · 1 nœud&lt;/b&gt;&lt;br&gt;topic vitals.raw (clé = patient_id) · écoute TLS 9093 uniquement · client identifié par son certificat (🔒 mTLS) · &lt;b&gt;ACL par service&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px;&quot; color=&quot;#7a5a8f&quot;&gt;⚙ Service systemd installé sur la VM&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="470" x="115" y="1105" as="geometry" />
+        </mxCell>
+        <mxCell id="pg" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontSize=11;fontColor=#333333;" value="&lt;b&gt;PostgreSQL + TimescaleDB&lt;/b&gt; · 5432&lt;br&gt;bases : vitals (7 jours, hypertable) · kpi · keycloak&lt;br&gt;TLS · 1 rôle par service&lt;br&gt;&lt;font style=&quot;font-size: 10px;&quot; color=&quot;#7a5a8f&quot;&gt;⚙ Service systemd&lt;/font&gt;" vertex="1">
+          <mxGeometry height="140" width="200" x="645" y="1100" as="geometry" />
+        </mxCell>
+        <mxCell id="airflow" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontColor=#333333;" value="&lt;b&gt;Apache Airflow&lt;/b&gt;&lt;br&gt;planifie le traitement quotidien&lt;br&gt;&lt;font style=&#39;font-size:10px&#39; color=&#39;#1d63ed&#39;&gt;🐳 Conteneur Docker&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="200" x="115" y="1410" as="geometry" />
+        </mxCell>
+        <mxCell id="lake" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontSize=11;fontColor=#333333;" value="&lt;b&gt;Data Lake&lt;/b&gt; · 8333&lt;br&gt;SeaweedFS (API S3) + tables Iceberg&lt;br&gt;raw → cleaned → KPI&lt;br&gt;&lt;font style=&#39;font-size:10px&#39; color=&#39;#1d63ed&#39;&gt;🐳 Conteneur Docker&lt;/font&gt;" vertex="1">
+          <mxGeometry height="140" width="200" x="385" y="1575" as="geometry" />
+        </mxCell>
+        <mxCell id="spark" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontColor=#333333;" value="&lt;b&gt;Apache Spark&lt;/b&gt;&lt;br&gt;traitement batch quotidien&lt;br&gt;CPU / RAM de cette VM uniquement&lt;br&gt;&lt;font style=&#39;font-size:10px&#39; color=&#39;#1d63ed&#39;&gt;🐳 Conteneur Docker&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="200" x="385" y="1410" as="geometry" />
+        </mxCell>
+        <mxCell id="gf" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontColor=#333333;" value="&lt;b&gt;Grafana&lt;/b&gt; · 3000&lt;br&gt;tableaux de bord KPI&lt;br&gt;connexion via Keycloak&lt;br&gt;&lt;font style=&#39;font-size:10px&#39; color=&#39;#1d63ed&#39;&gt;🐳 Conteneur Docker&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="200" x="645" y="1410" as="geometry" />
+        </mxCell>
+        <mxCell id="vaultNote" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=11;fontColor=#8c6d00;" value="&lt;b&gt;🔑 Vault Agent → Vault · 8200&lt;/b&gt;&lt;br&gt;Chaque VM (tiers 3 à 5) va chercher auprès de Vault ses certificats mTLS à courte durée et ses identifiants Kafka / base." vertex="1">
+          <mxGeometry height="115" width="178" x="972" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="kcDbNote" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=11;fontColor=#8c6d00;" value="&lt;b&gt;Keycloak → PostgreSQL · 5432&lt;/b&gt;&lt;br&gt;Keycloak enregistre ses utilisateurs et ses rôles dans la base keycloak (TLS, rôle dédié)." vertex="1">
+          <mxGeometry height="85" width="178" x="972" y="1040" as="geometry" />
+        </mxCell>
+        <mxCell id="oidcNote" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=11;fontColor=#8c6d00;" value="&lt;b&gt;Grafana → Keycloak · 8443&lt;/b&gt;&lt;br&gt;Grafana vérifie la connexion de l&#39;analyste auprès de Keycloak (OIDC)." vertex="1">
+          <mxGeometry height="80" width="178" x="972" y="1385" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="hr" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#b85450;strokeWidth=2;fontSize=10;fontColor=#b85450;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.1068;entryY=0;entryDx=0;entryDy=0;" target="nginx" value="[1] MQTT sur TLS · TCP 8883&lt;br&gt;🔒 &lt;b&gt;mTLS&lt;/b&gt; (certificat du bracelet)">
+          <mxGeometry relative="1" x="0.4091" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="std" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#333333;strokeWidth=2;fontSize=10;fontColor=#333333;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.3589;entryY=0;entryDx=0;entryDy=0;" target="nginx" value="HTTPS · TCP 8443&lt;br&gt;🔒 &lt;b&gt;mTLS&lt;/b&gt; (certificat du bracelet)">
+          <mxGeometry relative="1" x="0.7" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="ana" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#6c8ebf;strokeWidth=1.5;fontSize=10;fontColor=#3d6ba3;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.611;entryY=0;entryDx=0;entryDy=0;" target="nginx" value="HTTPS · TCP 443&lt;br&gt;TLS + jeton OIDC">
+          <mxGeometry relative="1" x="0.4091" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="doc" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#b85450;strokeWidth=2;fontSize=10;fontColor=#b85450;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.863;entryY=0;entryDx=0;entryDy=0;" target="nginx" value="[7] HTTPS + WebSocket · TCP 443&lt;br&gt;TLS + jeton OIDC">
+          <mxGeometry relative="1" x="0.7" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="nginx" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#b85450;strokeWidth=2;fontSize=10;fontColor=#b85450;labelBackgroundColor=#ffffff;exitX=0.137;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="mq" value="[2] relais TCP 8883&lt;br&gt;TLS non terminé par NGINX">
+          <mxGeometry relative="1" x="-0.3077" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="nginx" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#333333;strokeWidth=2;fontSize=10;fontColor=#333333;labelBackgroundColor=#ffffff;exitX=0.3219;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="ing" value="HTTPS 8000&lt;br&gt;🔒 mTLS">
+          <mxGeometry relative="1" x="-0.7632" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="350" y="920" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="nginx" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#b85450;strokeWidth=2;fontSize=10;fontColor=#b85450;labelBackgroundColor=#ffffff;exitX=0.5068;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="no" value="[8] WebSocket relayé · 8000 · 🔒 mTLS&lt;br&gt;alerte redescend par cette connexion">
+          <mxGeometry relative="1" x="-0.3077" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="nginx" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#333333;strokeWidth=1.5;fontSize=10;fontColor=#333333;labelBackgroundColor=#ffffff;exitX=0.863;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="vit" value="historique patient · HTTPS 8000 · 🔒 mTLS">
+          <mxGeometry relative="1" x="-0.3077" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e20" edge="1" parent="1" source="nginx" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#6c8ebf;strokeWidth=1.5;fontSize=10;fontColor=#3d6ba3;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="gf" value="/grafana · HTTPS 3000 · 🔒 mTLS">
+          <mxGeometry relative="1" x="0.8829" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="50" y="520" />
+              <mxPoint x="50" y="1745" />
+              <mxPoint x="745" y="1745" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e25" edge="1" parent="1" source="nginx" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#b8860b;strokeWidth=2;fontSize=10;fontColor=#8c6d00;labelBackgroundColor=#ffffff;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.15;entryDx=0;entryDy=0;" target="kc" value="/auth · connexion OIDC des utilisateurs · HTTPS 8443">
+          <mxGeometry relative="1" x="0.0415" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="845" y="283" />
+              <mxPoint x="1160" y="283" />
+              <mxPoint x="1160" y="397" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="ing" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#b85450;strokeWidth=2;fontSize=10;fontColor=#b85450;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="mq" value="[3] s&#39;abonne&lt;br&gt;🔒 mTLS">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="ing" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#b85450;strokeWidth=2;fontSize=10;fontColor=#b85450;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.2128;entryY=0;entryDx=0;entryDy=0;" target="kafka" value="[4] écrit dans vitals.raw · 🔒 mTLS 9093&lt;br&gt;&lt;b&gt;ACL : WRITE seul&lt;/b&gt;">
+          <mxGeometry relative="1" x="-0.2308" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="al" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#b85450;strokeWidth=2;fontSize=10;fontColor=#b85450;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.7872;entryY=0;entryDx=0;entryDy=0;" target="kafka" value="[5] lit vitals.raw · 🔒 mTLS 9093&lt;br&gt;&lt;b&gt;ACL : READ seul&lt;/b&gt;">
+          <mxGeometry relative="1" x="-0.2308" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="al" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#b85450;strokeWidth=2;fontSize=10;fontColor=#b85450;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="no" value="[6] alerte&lt;br&gt;🔒 mTLS">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="vit" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#333333;strokeWidth=1.5;fontSize=10;fontColor=#333333;labelBackgroundColor=#ffffff;exitX=0.15;exitY=1;exitDx=0;exitDy=0;entryX=0.9468;entryY=0;entryDx=0;entryDy=0;" target="kafka" value="lit vitals.raw · 🔒 mTLS 9093&lt;br&gt;&lt;b&gt;ACL : READ seul&lt;/b&gt;">
+          <mxGeometry relative="1" x="0.4963" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="675" y="1060" />
+              <mxPoint x="560" y="1060" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="vit" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#333333;strokeWidth=1.5;fontSize=10;fontColor=#333333;labelBackgroundColor=#ffffff;exitX=0.6;exitY=1;exitDx=0;exitDy=0;entryX=0.6;entryY=0;entryDx=0;entryDy=0;" target="pg" value="SQL · TLS 5432&lt;br&gt;vitals_writer : INSERT seul&lt;br&gt;&lt;b&gt;vitals_reader : SELECT seul&lt;/b&gt;">
+          <mxGeometry relative="1" x="-0.2281" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e16" edge="1" parent="1" source="spark" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#6c8ebf;strokeWidth=2;fontSize=10;fontColor=#3d6ba3;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.7872;entryY=1;entryDx=0;entryDy=0;" target="kafka" value="lit vitals.raw · 1× / jour · 🔒 mTLS 9093&lt;br&gt;&lt;b&gt;ACL : READ seul&lt;/b&gt;">
+          <mxGeometry relative="1" x="0.6585" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e17" edge="1" parent="1" source="airflow" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#6c8ebf;strokeWidth=2;fontSize=10;fontColor=#3d6ba3;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.1923;entryY=0;entryDx=0;entryDy=0;" target="spark" value="lance le traitement quotidien (spark-submit)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="215" y="1365" />
+              <mxPoint x="423.46" y="1365" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e18" edge="1" parent="1" source="spark" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#6c8ebf;strokeWidth=2;fontSize=10;fontColor=#3d6ba3;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="lake" value="écrit raw → cleaned → KPI&lt;br&gt;API S3 · TLS 8333">
+          <mxGeometry relative="1" x="-0.5692" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e19" edge="1" parent="1" source="spark" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#6c8ebf;strokeWidth=2;fontSize=10;fontColor=#3d6ba3;labelBackgroundColor=#ffffff;exitX=0.8846;exitY=0;exitDx=0;exitDy=0;entryX=0.2857;entryY=1;entryDx=0;entryDy=0;" target="pg" value="écrit les KPI · TLS 5432 · rôle kpi_writer">
+          <mxGeometry relative="1" x="0.3868" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="561.92" y="1265" />
+              <mxPoint x="702.14" y="1265" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e27" edge="1" parent="1" source="gf" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#6c8ebf;strokeWidth=2;fontSize=10;fontColor=#3d6ba3;labelBackgroundColor=#ffffff;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" target="pg" value="lit les KPI · TLS 5432&lt;br&gt;&lt;b&gt;rôle grafana_ro : SELECT seul&lt;/b&gt;">
+          <mxGeometry relative="1" x="0.2941" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e28" edge="1" parent="1" source="kc" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#b8860b;strokeWidth=2;fontSize=10;fontColor=#8c6d00;labelBackgroundColor=#ffffff;exitX=1;exitY=0.8;exitDx=0;exitDy=0;entryX=0.85;entryY=0;entryDx=0;entryDy=0;" target="pg" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="1175" y="449" />
+              <mxPoint x="1175" y="1025" />
+              <mxPoint x="815" y="1025" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e26" edge="1" parent="1" source="gf" style="html=1;rounded=0;endArrow=block;endFill=1;strokeColor=#b8860b;strokeWidth=2;fontSize=10;fontColor=#8c6d00;labelBackgroundColor=#ffffff;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=1;entryY=0.45;entryDx=0;entryDy=0;" target="kc" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="1195" y="1480" />
+              <mxPoint x="1195" y="421" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e21" edge="1" parent="1" source="nginx" style="html=1;rounded=0;endArrow=block;endFill=1;dashed=1;dashPattern=4 3;strokeColor=#b8860b;strokeWidth=2;fontSize=10;fontColor=#8c6d00;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="vault" value="🔑 8200">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e22" edge="1" parent="1" source="t3" style="html=1;rounded=0;endArrow=block;endFill=1;dashed=1;dashPattern=4 3;strokeColor=#b8860b;strokeWidth=2;fontSize=10;fontColor=#8c6d00;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.1;entryY=1;entryDx=0;entryDy=0;" target="vault" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="958" y="825" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e23" edge="1" parent="1" source="t4" style="html=1;rounded=0;endArrow=block;endFill=1;dashed=1;dashPattern=4 3;strokeColor=#b8860b;strokeWidth=2;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.1;entryY=1;entryDx=0;entryDy=0;" target="vault" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="958" y="1157.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e24" edge="1" parent="1" source="t5" style="html=1;rounded=0;endArrow=block;endFill=1;dashed=1;dashPattern=4 3;strokeColor=#b8860b;strokeWidth=2;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.0805;exitDx=0;exitDy=0;entryX=0.1;entryY=1;entryDx=0;entryDy=0;" target="vault" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="958" y="1360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
