@@ -1,0 +1,38 @@
+== aeger-bastion
+nginx: Up 19 minutes
+vault-agent: Up 29 minutes
+== vm-sec-01
+keycloak: Up 29 minutes
+vault-agent: Up 56 minutes
+vault: Up 58 minutes
+== vm-hot-01
+ingestion: Up 19 minutes
+mosquitto: Up 19 minutes
+vault-agent: Up 25 minutes
+== vm-hot-02
+alerting: Up 19 minutes
+notification: Up 19 minutes
+vault-agent: Up 22 minutes
+== vm-hot-03
+vitals: Up 19 minutes
+vault-agent: Up 22 minutes
+== vm-kafka-01
+vault-agent: Up 37 minutes
+active
+== vm-db-01
+vault-agent: Up 36 minutes
+active
+== vm-cold-01
+airflow: Up Less than a second
+vault-agent: Up 7 minutes
+== vm-cold-02
+seaweedfs: Up 3 minutes
+vault-agent: Up 6 minutes
+== vm-cold-03
+spark-worker: Up 2 minutes
+spark-master: Up 2 minutes
+vault-agent: Up 5 minutes
+== vm-cold-04
+grafana-mtls: Up 2 minutes
+grafana: Up 2 minutes
+vault-agent: Up 4 minutes
