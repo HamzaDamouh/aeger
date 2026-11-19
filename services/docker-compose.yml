@@ -1,0 +1,301 @@
+# AEGER · tous les conteneurs de l'infrastructure, dans un seul fichier.
+#
+# Chaque service porte un PROFIL = la VM où il tourne. Sur une VM, on ne démarre que son profil :
+#     docker compose --profile vm-hot-01 up -d          (ou COMPOSE_PROFILES=vm-hot-01 dans le fichier .env)
+# Sur le PC, on construit toutes les images d'un coup :
+#     docker compose --profile build build
+#
+# Adresse publique d'AEGER (VM-EDGE-01 vue du Tier 1) : variable AEGER_PUBLIC_HOST, écrite dans le .env de chaque VM
+# par deploy/aeger.sh (valeur par défaut : 192.168.56.10, la maquette VirtualBox).
+#
+# Toute la configuration est ici (variables d'environnement, fichiers montés). Les Dockerfile ne servent
+# qu'à construire le code (services Java, application web, Spark, Airflow, Keycloak, Vault).
+# Les secrets ne sont jamais écrits ici : le Vault Agent de chaque VM les dépose dans /opt/aeger/secrets
+# (certificats *.pem, mots de passe *.env), lisibles par le groupe 2000 (aeger-secrets).
+# Les env_file sont « required: false » pour pouvoir construire les images sur le PC, où ils n'existent pas.
+#
+# Kafka (VM-KAFKA-01) et PostgreSQL (VM-DB-01) ne sont pas des conteneurs : services systemd
+# (voir tier4-donnees/kafka et tier4-donnees/postgresql). Sur ces deux VM, seul le Vault Agent tourne en conteneur.
+
+name: aeger
+
+x-service: &service              # réglages communs
+  network_mode: host             # le pare-feu ufw de la VM s'applique aux conteneurs
+  restart: unless-stopped
+  group_add: ["2000"]            # lecture des secrets
+x-secrets: &secrets /opt/aeger/secrets:/opt/aeger/secrets:ro
+x-java: &java_opts "-Xms64m -Xmx192m -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -Xss512k"
+
+services:
+
+  # ============================================================== toutes les VM (sauf le routeur)
+  vault-agent:
+    image: hashicorp/vault:1.18
+    container_name: vault-agent
+    profiles: [vm-edge-01, vm-sec-01, vm-hot-01, vm-hot-02, vm-hot-03, vm-kafka-01, vm-db-01,
+               vm-cold-01, vm-cold-02, vm-cold-03, vm-cold-04, build]
+    network_mode: host
+    restart: unless-stopped
+    user: "0:2000"               # fichiers écrits avec le groupe aeger-secrets
+    cap_add: [IPC_LOCK]
+    # configuration propre à chaque VM : deploy/<vm>/vault-agent.hcl (générée par securite/vault-agent/gen_configs.py)
+    entrypoint: ["vault", "agent", "-config=/opt/aeger/vault-agent/agent.hcl"]
+    volumes:
+      - /opt/aeger/vault-agent:/opt/aeger/vault-agent:ro
+      - /opt/aeger/secrets:/opt/aeger/secrets
+
+  # ============================================================== VM-EDGE-01 (DMZ, VLAN 10)
+  nginx:
+    <<: *service
+    image: aeger/nginx:1.0
+    build: { context: ./tier2-dmz, dockerfile: nginx/Dockerfile }
+    container_name: nginx
+    profiles: [vm-edge-01, build]
+    depends_on: [vault-agent]
+    ulimits:
+      nofile: 65536              # 1 000 bracelets MQTT relayés
+    volumes:
+      - ./tier2-dmz/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./tier2-dmz/nginx/security-headers.conf:/etc/nginx/security-headers.conf:ro
+      - *secrets
+
+  # ============================================================== VM-SEC-01 (sécurité, VLAN 20)
+  vault:
+    image: aeger/vault:1.0
+    build: ./securite/vault
+    container_name: vault
+    profiles: [vm-sec-01, build]
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      VAULT_LISTEN: "10.0.20.11:8200"
+      AEGER_PUBLIC_HOST: ${AEGER_PUBLIC_HOST:-192.168.56.10}
+    volumes:
+      - /opt/aeger/vault/data:/vault/data
+      - /opt/aeger/vault/init:/vault/init
+      - /opt/aeger/vault/tls:/vault/tls
+      - /opt/aeger/vault/out:/vault/out
+
+  keycloak:
+    <<: *service
+    image: aeger/keycloak:1.0
+    build: ./securite/keycloak
+    container_name: keycloak
+    profiles: [vm-sec-01, build]
+    depends_on: [vault-agent, vault]
+    env_file:      # mot de passe base, admin, secret du client grafana
+      - { path: /opt/aeger/secrets/keycloak.env, required: false }
+    environment:
+      KC_HOSTNAME: https://${AEGER_PUBLIC_HOST:-192.168.56.10}/auth
+      AEGER_PUBLIC_HOST: ${AEGER_PUBLIC_HOST:-192.168.56.10}         # adresses de redirection du realm (aeger-realm.json)
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
+      KC_PROXY_HEADERS: xforwarded
+      KC_HTTP_ENABLED: "false"
+      KC_HTTPS_PORT: "8443"
+      KC_HTTPS_CERTIFICATE_FILE: /opt/aeger/secrets/keycloak-cert.pem
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/aeger/secrets/keycloak-key.pem
+      KC_DB_URL: jdbc:postgresql://vm-db-01:5432/keycloak?sslmode=verify-full&sslrootcert=/opt/aeger/secrets/ca.pem
+      JAVA_OPTS_KC_HEAP: "-Xms192m -Xmx448m"
+    volumes:
+      - ./securite/keycloak/aeger-realm.json:/opt/keycloak/data/import/aeger-realm.json:ro
+      - *secrets
+
+  # ============================================================== VM-HOT-01 (temps réel, VLAN 30)
+  mosquitto:
+    image: eclipse-mosquitto:2.0.21
+    container_name: mosquitto
+    profiles: [vm-hot-01, build]
+    network_mode: host
+    restart: unless-stopped
+    # lancé directement en utilisateur mosquitto (1883) avec le groupe des secrets (2000) :
+    # démarré en root, mosquitto abandonnerait ses groupes et ne pourrait plus lire sa clé
+    user: "1883:2000"
+    ulimits:
+      nofile: 65536
+    depends_on: [vault-agent]
+    volumes:
+      - ./tier3-temps-reel/mosquitto:/mosquitto/config:ro      # mosquitto.conf + acl
+      - *secrets
+
+  ingestion:
+    <<: *service
+    image: aeger/ingestion:1.0
+    build: ./tier3-temps-reel/ingestion
+    container_name: ingestion
+    profiles: [vm-hot-01, build]
+    depends_on: [vault-agent, mosquitto]
+    environment:
+      KAFKA_BOOTSTRAP: vm-kafka-01:9093
+      KAFKA_TOPIC: vitals.raw
+      MQTT_URL: ssl://vm-hot-01:8883
+      MQTT_TOPIC: aeger/vitals/#
+      JAVA_OPTS: *java_opts
+    volumes: [*secrets]
+
+  # ============================================================== VM-HOT-02 (temps réel, VLAN 30)
+  notification:
+    <<: *service
+    image: aeger/notification:1.0
+    build: ./tier3-temps-reel/notification
+    container_name: notification
+    profiles: [vm-hot-02, build]
+    depends_on: [vault-agent]
+    environment:
+      JWT_ISSUER: https://${AEGER_PUBLIC_HOST:-192.168.56.10}/auth/realms/aeger
+      JWT_REQUIRED_ROLE: medecin
+      JWT_PUBLIC_KEY: /opt/aeger/secrets/keycloak-realm.pem
+      WS_ALLOWED_ORIGINS: https://${AEGER_PUBLIC_HOST:-192.168.56.10}
+      JAVA_OPTS: *java_opts
+    volumes: [*secrets]
+
+  alerting:
+    <<: *service
+    image: aeger/alerting:1.0
+    build: ./tier3-temps-reel/alerting
+    container_name: alerting
+    profiles: [vm-hot-02, build]
+    depends_on: [vault-agent, notification]
+    environment:
+      KAFKA_BOOTSTRAP: vm-kafka-01:9093
+      KAFKA_TOPIC: vitals.raw
+      KAFKA_GROUP_ID: alerting
+      NOTIFICATION_URL: https://vm-hot-02:8000/internal/alerts
+      JAVA_OPTS: *java_opts
+    volumes: [*secrets]
+
+  # ============================================================== VM-HOT-03 (temps réel, VLAN 30)
+  vitals:
+    <<: *service
+    image: aeger/vitals:1.0
+    build: ./tier3-temps-reel/vitals
+    container_name: vitals
+    profiles: [vm-hot-03, build]
+    depends_on: [vault-agent]
+    env_file:        # rôles vitals_writer / vitals_reader
+      - { path: /opt/aeger/secrets/vitals.env, required: false }
+    environment:
+      KAFKA_BOOTSTRAP: vm-kafka-01:9093
+      KAFKA_TOPIC: vitals.raw
+      KAFKA_GROUP_ID: vitals
+      DB_URL: jdbc:postgresql://vm-db-01:5432/vitals?sslmode=verify-full&sslrootcert=/opt/aeger/secrets/ca.pem
+      JWT_ISSUER: https://${AEGER_PUBLIC_HOST:-192.168.56.10}/auth/realms/aeger
+      JWT_REQUIRED_ROLE: medecin
+      JWT_PUBLIC_KEY: /opt/aeger/secrets/keycloak-realm.pem
+      JAVA_OPTS: *java_opts
+    volumes: [*secrets]
+
+  # ============================================================== VM-COLD-01 (analytique, VLAN 50)
+  airflow:
+    <<: *service
+    image: aeger/airflow:1.0
+    build: ./tier5-analytique/airflow
+    container_name: airflow
+    profiles: [vm-cold-01, build]
+    depends_on: [vault-agent]
+    env_file:         # SPARK_AUTH_SECRET
+      - { path: /opt/aeger/secrets/spark.env, required: false }
+    environment:
+      AEGER_SPARK_MASTER: spark://vm-cold-03:7077
+    volumes:
+      - /opt/aeger/airflow:/opt/airflow/data         # base SQLite d'Airflow (historique des exécutions)
+
+  # ============================================================== VM-COLD-02 (analytique, VLAN 50)
+  seaweedfs:
+    <<: *service
+    image: chrislusf/seaweedfs:3.80
+    container_name: seaweedfs
+    profiles: [vm-cold-02]
+    depends_on: [vault-agent]
+    env_file:            # S3_ACCESS_KEY / S3_SECRET_KEY
+      - { path: /opt/aeger/secrets/s3.env, required: false }
+    entrypoint: ["/bin/sh", "/aeger/entrypoint.sh"]  # crée l'identité S3 et le bucket aeger-lake
+    volumes:
+      - ./tier5-analytique/seaweedfs/entrypoint.sh:/aeger/entrypoint.sh:ro
+      - /opt/aeger/seaweedfs:/data
+      - *secrets
+
+  # ============================================================== VM-COLD-03 (analytique, VLAN 50)
+  spark-master:
+    <<: *service
+    image: aeger/spark:1.0
+    build: { context: ./tier5-analytique, dockerfile: spark/Dockerfile }
+    container_name: spark-master
+    profiles: [vm-cold-03, build]
+    depends_on: [vault-agent]
+    command: ["master"]
+    env_file:
+      - { path: /opt/aeger/secrets/spark.env, required: false }
+    volumes: [*secrets]
+
+  spark-worker:
+    <<: *service
+    image: aeger/spark:1.0
+    container_name: spark-worker
+    profiles: [vm-cold-03]
+    depends_on: [spark-master]
+    command: ["worker"]
+    # le driver du traitement de nuit tourne dans ce conteneur (mode cluster) : il lui faut tous les secrets
+    env_file:
+      - { path: /opt/aeger/secrets/spark.env, required: false }
+      - { path: /opt/aeger/secrets/kpi.env, required: false }
+      - { path: /opt/aeger/secrets/s3.env, required: false }
+    environment:
+      SPARK_MASTER_URL: spark://vm-cold-03:7077
+      SPARK_WORKER_CORES: "2"          # 1 pour le driver + 1 pour l'exécuteur
+      SPARK_WORKER_MEMORY: 1g
+      KAFKA_BOOTSTRAP: vm-kafka-01:9093
+      S3_ENDPOINT: https://vm-cold-02:8333
+    volumes: [*secrets]
+
+  # ============================================================== VM-COLD-04 (analytique, VLAN 50)
+  grafana:
+    <<: *service
+    image: grafana/grafana:11.3.0
+    container_name: grafana
+    profiles: [vm-cold-04]
+    depends_on: [vault-agent]
+    env_file:       # grafana_ro, admin, secret OAuth
+      - { path: /opt/aeger/secrets/grafana.env, required: false }
+    environment:
+      GF_SERVER_HTTP_ADDR: 127.0.0.1                 # joignable seulement via le sidecar mTLS
+      GF_SERVER_HTTP_PORT: "3001"
+      GF_SERVER_ROOT_URL: https://${AEGER_PUBLIC_HOST:-192.168.56.10}/grafana/
+      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+      GF_PLUGINS_PREINSTALL_DISABLED: "true"          # aucun téléchargement de plugin depuis Internet
+      GF_USERS_DEFAULT_LANGUAGE: fr-FR
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/aeger-kpi.json
+      # connexion des analystes via Keycloak (OIDC) ; seul le rôle « analyste » donne accès (lecture)
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
+      GF_AUTH_GENERIC_OAUTH_NAME: Keycloak
+      GF_AUTH_GENERIC_OAUTH_AUTO_LOGIN: "true"
+      GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: "true"
+      GF_AUTH_GENERIC_OAUTH_CLIENT_ID: grafana
+      GF_AUTH_GENERIC_OAUTH_SCOPES: openid profile email
+      GF_AUTH_GENERIC_OAUTH_USE_PKCE: "true"
+      GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://${AEGER_PUBLIC_HOST:-192.168.56.10}/auth/realms/aeger/protocol/openid-connect/auth
+      GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://vm-sec-01:8443/auth/realms/aeger/protocol/openid-connect/token
+      GF_AUTH_GENERIC_OAUTH_API_URL: https://vm-sec-01:8443/auth/realms/aeger/protocol/openid-connect/userinfo
+      GF_AUTH_GENERIC_OAUTH_SIGNOUT_REDIRECT_URL: https://${AEGER_PUBLIC_HOST:-192.168.56.10}/auth/realms/aeger/protocol/openid-connect/logout
+      GF_AUTH_GENERIC_OAUTH_TLS_CLIENT_CA: /opt/aeger/secrets/ca.pem
+      GF_AUTH_GENERIC_OAUTH_LOGIN_ATTRIBUTE_PATH: preferred_username
+      GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(roles[*], 'analyste') && 'Viewer'"
+      GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_STRICT: "true"
+    volumes:
+      - ./tier5-analytique/grafana/provisioning:/etc/grafana/provisioning:ro     # source de données KPI
+      - ./tier5-analytique/grafana/dashboards:/var/lib/grafana/dashboards:ro     # tableau de bord AEGER
+      - *secrets
+
+  # Grafana ne sait pas exiger un certificat client : ce NGINX fait le mTLS sur 3000 et relaie vers 127.0.0.1:3001
+  grafana-mtls:
+    image: nginx:1.28-alpine
+    container_name: grafana-mtls
+    profiles: [vm-cold-04]
+    network_mode: host
+    restart: unless-stopped
+    depends_on: [vault-agent, grafana]
+    volumes:
+      - ./tier5-analytique/grafana-mtls/nginx.conf:/etc/nginx/nginx.conf:ro
+      - *secrets

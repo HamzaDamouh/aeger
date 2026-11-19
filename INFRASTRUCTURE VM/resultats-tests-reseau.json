@@ -1,0 +1,42 @@
+{
+  "date": "18/11/2026",
+  "contexte": "Ce réseau a été validé le 18/11/2026 sur une maquette VirtualBox qui reproduit le réseau vSphere : un switch LAN simulé où seule VM-EDGE-01 est branchée, les groupes de ports, les adresses MAC fixes, et 5 VM (VM-EDGE-01, VM-COLD-01, VM-SEC-01, VM-HOT-01, VM-COLD-03) démarrées avec la configuration générée par generer.py. Les flux vers les VM absentes de la maquette n'ont pas pu être testés ici ; l'ensemble des 25 flux du diagramme avait été vérifié auparavant sur les 11 VM avec le même plan d'adressage et les mêmes règles de pare-feu.",
+  "maquette_vsphere": [
+    [
+      "Cartes reconnues par leur MAC et renommées (ext, lan10 à lan50), adresses et routes du tableau",
+      "OK sur les 5 VM"
+    ],
+    [
+      "VM-COLD-01 : 10.0.50.11 + passerelle 10.0.50.1, passerelles 10.0.10.1 à 10.0.40.1, routage activé",
+      "OK"
+    ],
+    [
+      "Flux entre VLAN à travers VM-COLD-01 : EDGE → HOT-01 (F04, F05), EDGE → SEC (F09, F10), HOT-01, SEC, COLD-03 → Vault (F22)",
+      "OK"
+    ],
+    [
+      "VM-COLD-01 → Vault (F22) depuis son adresse du VLAN 20, VM-COLD-01 → COLD-03 (F16)",
+      "OK"
+    ],
+    [
+      "Flux interdits (vers Kafka, PostgreSQL, SSH entre VM, autres ports)",
+      "tous bloqués"
+    ],
+    [
+      "Internet des VM internes : via VM-COLD-01 puis le NAT de VM-EDGE-01 (port 80), port 25 bloqué",
+      "OK sur COLD-01, SEC, HOT-01, COLD-03"
+    ],
+    [
+      "DNS et heure servis par VM-EDGE-01 (10.0.10.11) ; VM-EDGE-01 à l'heure d'Internet",
+      "OK"
+    ],
+    [
+      "Bastion SSH : PC → VM-EDGE-01 (carte ext) → chacune des 4 autres VM",
+      "OK"
+    ],
+    [
+      "Tier 1 : port 443 de VM-EDGE-01 joignable depuis le LAN",
+      "OK"
+    ]
+  ]
+}

@@ -1,0 +1,63 @@
+# Configuration du service ingestion (toutes les valeurs ont un défaut conforme au contrat,
+# surchargeables par variables d'environnement).
+aeger:
+  service-name: ${SERVICE_NAME:ingestion}
+  secrets-dir: ${AEGER_SECRETS_DIR:/opt/aeger/secrets}
+  kafka:
+    bootstrap: ${KAFKA_BOOTSTRAP:vm-kafka-01:9093}
+    topic: ${KAFKA_TOPIC:vitals.raw}
+  mqtt:
+    url: ${MQTT_URL:ssl://vm-hot-01:8883}
+    topic: ${MQTT_TOPIC:aeger/vitals/#}
+    client-id: ${MQTT_CLIENT_ID:ingestion}
+
+spring:
+  application:
+    name: ingestion
+  main:
+    banner-mode: off
+  # Certificat du service (clé PKCS#8 + certificat + CA dans un seul fichier) et CA AEGER.
+  # Ce bundle sert au serveur HTTPS et au client MQTT.
+  ssl:
+    bundle:
+      pem:
+        service:
+          keystore:
+            certificate: file:${aeger.secrets-dir}/${aeger.service-name}.pem
+            private-key: file:${aeger.secrets-dir}/${aeger.service-name}.pem
+          truststore:
+            certificate: file:${aeger.secrets-dir}/ca.pem
+  servlet:
+    multipart:
+      enabled: false
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.websocket.servlet.WebSocketServletAutoConfiguration
+      - org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration
+      - org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration
+      - org.springframework.boot.autoconfigure.web.client.RestClientAutoConfiguration
+      - org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfiguration
+      - org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration
+
+server:
+  port: ${SERVER_PORT:8000}
+  shutdown: graceful
+  ssl:
+    enabled: true
+    bundle: service
+    client-auth: need          # mTLS obligatoire
+  tomcat:
+    threads:
+      max: 64
+      min-spare: 4
+  error:
+    include-message: always
+    include-stacktrace: never
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %5p [%15.15t] %-24.24logger{0} : %m%n"
+  level:
+    root: INFO
+    org.apache.kafka: WARN
+    org.eclipse.paho: WARN

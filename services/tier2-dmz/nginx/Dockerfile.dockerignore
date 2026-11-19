@@ -1,0 +1,3 @@
+# Contexte de build = tier2-dmz/ : seules les sources de l'application web sont envoyées
+**/node_modules
+**/dist

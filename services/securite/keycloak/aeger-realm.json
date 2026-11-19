@@ -1,0 +1,97 @@
+{
+  "realm": "aeger",
+  "displayName": "AEGER",
+  "enabled": true,
+  "sslRequired": "external",
+  "accessTokenLifespan": 300,
+  "ssoSessionIdleTimeout": 3600,
+  "ssoSessionMaxLifespan": 36000,
+  "bruteForceProtected": true,
+  "internationalizationEnabled": true,
+  "supportedLocales": ["fr", "en"],
+  "defaultLocale": "fr",
+  "roles": {
+    "realm": [
+      { "name": "medecin", "description": "Médecin : alertes en direct et historique patient" },
+      { "name": "analyste", "description": "Analyste : tableaux de bord KPI (Grafana)" }
+    ]
+  },
+  "users": [
+    {
+      "username": "medecin1",
+      "enabled": true,
+      "firstName": "Claire",
+      "lastName": "Martin",
+      "email": "medecin1@aeger.local",
+      "emailVerified": true,
+      "credentials": [ { "type": "password", "value": "medecin1", "temporary": false } ],
+      "realmRoles": ["medecin"]
+    },
+    {
+      "username": "analyste1",
+      "enabled": true,
+      "firstName": "Paul",
+      "lastName": "Durand",
+      "email": "analyste1@aeger.local",
+      "emailVerified": true,
+      "credentials": [ { "type": "password", "value": "analyste1", "temporary": false } ],
+      "realmRoles": ["analyste"]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "aeger-web",
+      "name": "Application web du médecin",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "rootUrl": "https://${AEGER_PUBLIC_HOST}",
+      "baseUrl": "/",
+      "redirectUris": ["https://${AEGER_PUBLIC_HOST}/*"],
+      "webOrigins": ["https://${AEGER_PUBLIC_HOST}"],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://${AEGER_PUBLIC_HOST}/*"
+      }
+    },
+    {
+      "clientId": "grafana",
+      "name": "Grafana (analystes)",
+      "enabled": true,
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${GRAFANA_CLIENT_SECRET}",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "rootUrl": "https://${AEGER_PUBLIC_HOST}/grafana",
+      "redirectUris": ["https://${AEGER_PUBLIC_HOST}/grafana/login/generic_oauth"],
+      "webOrigins": ["https://${AEGER_PUBLIC_HOST}"],
+      "attributes": { "post.logout.redirect.uris": "https://${AEGER_PUBLIC_HOST}/grafana/*" },
+      "protocolMappers": [
+        {
+          "name": "realm roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "multivalued": "true",
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "aeger-tests",
+      "name": "Tests en ligne de commande (à supprimer en production)",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": true
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+[Unit]
+Description=Apache Kafka 4.3 (KRaft) - AEGER
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=kafka
+Group=kafka
+SupplementaryGroups=aeger-secrets
+Environment="KAFKA_HEAP_OPTS=-Xms256m -Xmx512m"
+Environment="LOG_DIR=/var/log/kafka"
+Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:+ExplicitGCInvokesConcurrent"
+ExecStart=/opt/kafka/bin/kafka-server-start.sh /etc/kafka/server.properties
+ExecStop=/opt/kafka/bin/kafka-server-stop.sh
+Restart=on-failure
+RestartSec=10
+LimitNOFILE=100000
+
+[Install]
+WantedBy=multi-user.target

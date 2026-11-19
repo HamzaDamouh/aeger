@@ -1,0 +1,2 @@
+# (vide : les alertes sont gérées par la chaîne temps réel, pas par Grafana)
+apiVersion: 1

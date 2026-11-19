@@ -1,0 +1,5 @@
+# Contexte de build = tier5-analytique/ : n'envoyer que ce dont spark/Dockerfile a besoin.
+*
+!spark-job/pom.xml
+!spark-job/src
+!spark/entrypoint.sh

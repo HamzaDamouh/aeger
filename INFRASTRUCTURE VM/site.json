@@ -1,0 +1,23 @@
+{
+  "_aide": "Paramètres propres à votre vSphere. Modifier ce fichier puis relancer : python generer.py",
+
+  "portgroup_lan": "LAN",
+  "portgroups": {
+    "10": "AEGER-VLAN10-DMZ",
+    "20": "AEGER-VLAN20-SEC",
+    "30": "AEGER-VLAN30-HOT",
+    "40": "AEGER-VLAN40-DATA",
+    "50": "AEGER-VLAN50-COLD"
+  },
+  "_vlan_ids": "VLAN ID proposé pour chaque groupe de ports (à valider avec l'administrateur du vCenter)",
+  "vlan_ids": { "10": 10, "20": 20, "30": 30, "40": 40, "50": 50 },
+
+  "_edge_lan": "Adresse de VM-EDGE-01 sur le switch LAN (la seule VM branchée sur LAN) : \"dhcp\" ou une IP fixe \"192.168.1.11/24\". IP fixe fortement conseillée : c'est l'adresse publique d'AEGER, inscrite dans les certificats et dans Keycloak, et le bastion SSH",
+  "edge_lan": "dhcp",
+  "_passerelle_dns": "Seulement avec une IP fixe : passerelle et DNS du réseau LAN",
+  "passerelle_lan": "",
+  "dns_lan": [],
+
+  "_admin": "Réseau autorisé à se connecter en SSH à VM-EDGE-01 (bastion), ex. \"192.168.1.0/24\" ; vide = tout le LAN",
+  "admin_ssh_depuis": ""
+}

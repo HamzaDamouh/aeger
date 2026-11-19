@@ -1,0 +1,57 @@
+# Configuration du service notification.
+aeger:
+  service-name: ${SERVICE_NAME:notification}
+  secrets-dir: ${AEGER_SECRETS_DIR:/opt/aeger/secrets}
+  jwt:
+    public-key: ${JWT_PUBLIC_KEY:${aeger.secrets-dir}/keycloak-realm.pem}
+    issuer: ${JWT_ISSUER:https://192.168.56.10/auth/realms/aeger}
+    required-role: ${JWT_REQUIRED_ROLE:medecin}
+  ws:
+    allowed-origins: ${WS_ALLOWED_ORIGINS:*}
+
+spring:
+  application:
+    name: notification
+  main:
+    banner-mode: off
+  # Certificat du service (clé PKCS#8 + certificat + CA dans un seul fichier) et CA AEGER
+  ssl:
+    bundle:
+      pem:
+        service:
+          keystore:
+            certificate: file:${aeger.secrets-dir}/${aeger.service-name}.pem
+            private-key: file:${aeger.secrets-dir}/${aeger.service-name}.pem
+          truststore:
+            certificate: file:${aeger.secrets-dir}/ca.pem
+  servlet:
+    multipart:
+      enabled: false
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration
+      - org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration
+      - org.springframework.boot.autoconfigure.web.client.RestClientAutoConfiguration
+      - org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfiguration
+      - org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration
+
+server:
+  port: ${SERVER_PORT:8000}
+  shutdown: graceful
+  ssl:
+    enabled: true
+    bundle: service
+    client-auth: need          # mTLS obligatoire
+  tomcat:
+    threads:
+      max: 32
+      min-spare: 4
+  error:
+    include-message: always
+    include-stacktrace: never
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %5p [%15.15t] %-24.24logger{0} : %m%n"
+  level:
+    root: INFO

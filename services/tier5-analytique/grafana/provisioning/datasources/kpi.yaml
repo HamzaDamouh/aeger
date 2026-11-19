@@ -1,0 +1,21 @@
+# Source de données : base kpi sur VM-DB-01, rôle grafana_ro (SELECT seul), TLS vérifié
+apiVersion: 1
+datasources:
+  - name: AEGER KPI
+    uid: aeger-kpi
+    type: grafana-postgresql-datasource
+    access: proxy
+    url: vm-db-01:5432
+    user: ${GRAFANA_DB_USER}
+    isDefault: true
+    jsonData:
+      database: kpi
+      sslmode: verify-full
+      tlsConfigurationMethod: file-path
+      sslRootCertFile: /opt/aeger/secrets/ca.pem
+      postgresVersion: 1600
+      timescaledb: false
+      maxOpenConns: 5
+    secureJsonData:
+      password: ${GRAFANA_DB_PASSWORD}
+    editable: false

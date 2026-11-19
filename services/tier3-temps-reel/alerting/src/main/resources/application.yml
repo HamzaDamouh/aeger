@@ -1,0 +1,39 @@
+# Configuration du service alerting (pas de serveur HTTP).
+aeger:
+  service-name: ${SERVICE_NAME:alerting}
+  secrets-dir: ${AEGER_SECRETS_DIR:/opt/aeger/secrets}
+  kafka:
+    bootstrap: ${KAFKA_BOOTSTRAP:vm-kafka-01:9093}
+    topic: ${KAFKA_TOPIC:vitals.raw}
+    group-id: ${KAFKA_GROUP_ID:alerting}
+  notification-url: ${NOTIFICATION_URL:https://vm-hot-02:8000/internal/alerts}
+
+spring:
+  application:
+    name: alerting
+  main:
+    banner-mode: off
+    web-application-type: none
+    keep-alive: true
+  # Certificat du service pour le client HTTPS (mTLS vers notification)
+  ssl:
+    bundle:
+      pem:
+        service:
+          keystore:
+            certificate: file:${aeger.secrets-dir}/${aeger.service-name}.pem
+            private-key: file:${aeger.secrets-dir}/${aeger.service-name}.pem
+          truststore:
+            certificate: file:${aeger.secrets-dir}/ca.pem
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfiguration
+      - org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration
+      - org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %5p [%15.15t] %-24.24logger{0} : %m%n"
+  level:
+    root: INFO
+    org.apache.kafka: WARN

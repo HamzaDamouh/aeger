@@ -1,0 +1,15 @@
+# Réglages du déploiement AEGER : copier ce fichier en aeger.conf (dans Services/deploy) et l'adapter.
+# Sans aeger.conf, aeger.sh vise la maquette VirtualBox.
+
+# Plateforme : vsphere (VM de l'école) ou virtualbox (maquette)
+AEGER_PLATEFORME=vsphere
+
+# Adresse publique d'AEGER : VM-EDGE-01 sur le switch LAN (IP ou nom DNS), vue par les postes du Tier 1.
+# Elle est inscrite dans les certificats de nginx et mosquitto, dans Keycloak et dans Grafana.
+AEGER_PUBLIC_HOST=192.168.1.11
+
+# Bastion SSH : VM-EDGE-01, seule VM joignable depuis le LAN. Par défaut, l'adresse publique ci-dessus.
+# AEGER_BASTION=192.168.1.11
+
+# Dossier des images Docker exportées par « bash aeger.sh images » (facultatif)
+# AEGER_IMAGES="$HOME/aeger-images"

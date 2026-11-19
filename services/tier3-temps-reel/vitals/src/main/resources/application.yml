@@ -1,0 +1,94 @@
+# Configuration du service vitals.
+# DB_WRITER_USER / DB_WRITER_PASSWORD / DB_READER_USER / DB_READER_PASSWORD viennent de
+# l'environnement ou, à défaut, du fichier /opt/aeger/secrets/vitals.env (voir SecretsEnvFile).
+aeger:
+  service-name: ${SERVICE_NAME:vitals}
+  secrets-dir: ${AEGER_SECRETS_DIR:/opt/aeger/secrets}
+  kafka:
+    bootstrap: ${KAFKA_BOOTSTRAP:vm-kafka-01:9093}
+    topic: ${KAFKA_TOPIC:vitals.raw}
+    group-id: ${KAFKA_GROUP_ID:vitals}
+  jwt:
+    public-key: ${JWT_PUBLIC_KEY:${aeger.secrets-dir}/keycloak-realm.pem}
+    issuer: ${JWT_ISSUER:https://192.168.56.10/auth/realms/aeger}
+    required-role: ${JWT_REQUIRED_ROLE:medecin}
+  db:
+    url: ${DB_URL:jdbc:postgresql://vm-db-01:5432/vitals?sslmode=verify-full&sslrootcert=${aeger.secrets-dir}/ca.pem}
+    # Pools Hikari créés à la première utilisation (initialization-fail-timeout -1) :
+    # le service démarre même si la base est injoignable.
+    writer:
+      pool-name: writer
+      jdbc-url: ${aeger.db.url}
+      username: ${DB_WRITER_USER:}
+      password: ${DB_WRITER_PASSWORD:}
+      maximum-pool-size: 2
+      minimum-idle: 1
+      connection-timeout: 5000
+      initialization-fail-timeout: -1
+    reader:
+      pool-name: reader
+      jdbc-url: ${aeger.db.url}
+      username: ${DB_READER_USER:}
+      password: ${DB_READER_PASSWORD:}
+      maximum-pool-size: 3
+      minimum-idle: 1
+      connection-timeout: 5000
+      initialization-fail-timeout: -1
+      read-only: true
+      connection-init-sql: SET statement_timeout = 15000
+
+spring:
+  application:
+    name: vitals
+  main:
+    banner-mode: off
+  # Certificat du service (clé PKCS#8 + certificat + CA dans un seul fichier) et CA AEGER
+  ssl:
+    bundle:
+      pem:
+        service:
+          keystore:
+            certificate: file:${aeger.secrets-dir}/${aeger.service-name}.pem
+            private-key: file:${aeger.secrets-dir}/${aeger.service-name}.pem
+          truststore:
+            certificate: file:${aeger.secrets-dir}/ca.pem
+  servlet:
+    multipart:
+      enabled: false
+  autoconfigure:
+    exclude:
+      # deux sources de données déclarées à la main (DataSourceConfig) ; jamais de DDL depuis l'application
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.JdbcClientAutoConfiguration
+      - org.springframework.boot.autoconfigure.sql.init.SqlInitializationAutoConfiguration
+      - org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration
+      - org.springframework.boot.autoconfigure.websocket.servlet.WebSocketServletAutoConfiguration
+      - org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration
+      - org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration
+      - org.springframework.boot.autoconfigure.web.client.RestClientAutoConfiguration
+      - org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfiguration
+      - org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration
+
+server:
+  port: ${SERVER_PORT:8000}
+  shutdown: graceful
+  ssl:
+    enabled: true
+    bundle: service
+    client-auth: need          # mTLS obligatoire
+  tomcat:
+    threads:
+      max: 32
+      min-spare: 4
+  error:
+    include-message: always
+    include-stacktrace: never
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %5p [%15.15t] %-24.24logger{0} : %m%n"
+  level:
+    root: INFO
+    org.apache.kafka: WARN

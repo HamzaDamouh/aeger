@@ -1,0 +1,99 @@
+{
+  "uid": "aeger-kpi",
+  "title": "AEGER · Indicateurs quotidiens",
+  "description": "KPI calculés chaque nuit par Spark (cold path) à partir des mesures de la veille",
+  "tags": ["aeger", "kpi"],
+  "timezone": "Europe/Paris",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": false,
+  "refresh": "5m",
+  "time": { "from": "now-30d", "to": "now" },
+  "panels": [
+    {
+      "id": 1, "type": "stat", "title": "Mesures (dernier jour calculé)",
+      "gridPos": { "x": 0, "y": 0, "w": 5, "h": 5 },
+      "datasource": { "type": "grafana-postgresql-datasource", "uid": "aeger-kpi" },
+      "targets": [ { "refId": "A", "format": "table", "rawQuery": true, "editorMode": "code",
+        "rawSql": "SELECT nb_measures AS \"Mesures\" FROM kpi.daily_summary ORDER BY day DESC LIMIT 1" } ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "" }, "colorMode": "value", "graphMode": "none" },
+      "fieldConfig": { "defaults": { "unit": "short", "color": { "mode": "fixed", "fixedColor": "blue" } }, "overrides": [] }
+    },
+    {
+      "id": 2, "type": "stat", "title": "Patients suivis",
+      "gridPos": { "x": 5, "y": 0, "w": 5, "h": 5 },
+      "datasource": { "type": "grafana-postgresql-datasource", "uid": "aeger-kpi" },
+      "targets": [ { "refId": "A", "format": "table", "rawQuery": true, "editorMode": "code",
+        "rawSql": "SELECT nb_patients AS \"Patients\" FROM kpi.daily_summary ORDER BY day DESC LIMIT 1" } ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "" }, "colorMode": "value", "graphMode": "none" },
+      "fieldConfig": { "defaults": { "unit": "short", "color": { "mode": "fixed", "fixedColor": "green" } }, "overrides": [] }
+    },
+    {
+      "id": 3, "type": "stat", "title": "Mesures en alerte",
+      "gridPos": { "x": 10, "y": 0, "w": 5, "h": 5 },
+      "datasource": { "type": "grafana-postgresql-datasource", "uid": "aeger-kpi" },
+      "targets": [ { "refId": "A", "format": "table", "rawQuery": true, "editorMode": "code",
+        "rawSql": "SELECT nb_alerts AS \"Alertes\" FROM kpi.daily_summary ORDER BY day DESC LIMIT 1" } ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "" }, "colorMode": "value", "graphMode": "none" },
+      "fieldConfig": { "defaults": { "unit": "short", "color": { "mode": "fixed", "fixedColor": "orange" } }, "overrides": [] }
+    },
+    {
+      "id": 4, "type": "stat", "title": "Part des mesures en alerte",
+      "gridPos": { "x": 15, "y": 0, "w": 5, "h": 5 },
+      "datasource": { "type": "grafana-postgresql-datasource", "uid": "aeger-kpi" },
+      "targets": [ { "refId": "A", "format": "table", "rawQuery": true, "editorMode": "code",
+        "rawSql": "SELECT pct_alert AS \"% alertes\" FROM kpi.daily_summary ORDER BY day DESC LIMIT 1" } ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "" }, "colorMode": "value", "graphMode": "none" },
+      "fieldConfig": { "defaults": { "unit": "percent", "decimals": 2,
+        "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 1 }, { "color": "red", "value": 5 } ] } }, "overrides": [] }
+    },
+    {
+      "id": 5, "type": "stat", "title": "Jour calculé",
+      "gridPos": { "x": 20, "y": 0, "w": 4, "h": 5 },
+      "datasource": { "type": "grafana-postgresql-datasource", "uid": "aeger-kpi" },
+      "targets": [ { "refId": "A", "format": "table", "rawQuery": true, "editorMode": "code",
+        "rawSql": "SELECT to_char(day, 'DD/MM/YYYY') AS \"Jour\" FROM kpi.daily_summary ORDER BY day DESC LIMIT 1" } ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "/.*/" }, "colorMode": "none", "graphMode": "none", "textMode": "value" }
+    },
+    {
+      "id": 6, "type": "timeseries", "title": "Mesures et alertes par jour",
+      "gridPos": { "x": 0, "y": 5, "w": 12, "h": 8 },
+      "datasource": { "type": "grafana-postgresql-datasource", "uid": "aeger-kpi" },
+      "targets": [ { "refId": "A", "format": "time_series", "rawQuery": true, "editorMode": "code",
+        "rawSql": "SELECT day::timestamp AS time, nb_measures AS \"Mesures\", nb_alerts AS \"Alertes\" FROM kpi.daily_summary WHERE $__timeFilter(day::timestamp) ORDER BY 1" } ],
+      "fieldConfig": { "defaults": { "custom": { "drawStyle": "bars", "fillOpacity": 60 } },
+        "overrides": [ { "matcher": { "id": "byName", "options": "Alertes" }, "properties": [ { "id": "custom.axisPlacement", "value": "right" }, { "id": "color", "value": { "mode": "fixed", "fixedColor": "orange" } } ] } ] }
+    },
+    {
+      "id": 7, "type": "timeseries", "title": "Moyennes physiologiques par jour",
+      "gridPos": { "x": 12, "y": 5, "w": 12, "h": 8 },
+      "datasource": { "type": "grafana-postgresql-datasource", "uid": "aeger-kpi" },
+      "targets": [ { "refId": "A", "format": "time_series", "rawQuery": true, "editorMode": "code",
+        "rawSql": "SELECT day::timestamp AS time, avg_heart_rate AS \"Fréquence cardiaque (bpm)\", avg_spo2 AS \"SpO2 (%)\", avg_temperature AS \"Température (°C)\" FROM kpi.daily_summary WHERE $__timeFilter(day::timestamp) ORDER BY 1" } ],
+      "fieldConfig": { "defaults": { "decimals": 1, "custom": { "drawStyle": "line", "pointSize": 6, "showPoints": "always" } }, "overrides": [] }
+    },
+    {
+      "id": 8, "type": "barchart", "title": "Par type de bracelet (dernier jour calculé)",
+      "gridPos": { "x": 0, "y": 13, "w": 8, "h": 8 },
+      "datasource": { "type": "grafana-postgresql-datasource", "uid": "aeger-kpi" },
+      "targets": [ { "refId": "A", "format": "table", "rawQuery": true, "editorMode": "code",
+        "rawSql": "SELECT CASE type WHEN 'high_risk' THEN 'Haut risque' ELSE 'Standard' END AS \"Type\", nb_measures AS \"Mesures\", nb_alerts AS \"Alertes\" FROM kpi.daily_by_type WHERE day = (SELECT max(day) FROM kpi.daily_summary) ORDER BY 1" } ],
+      "options": { "xField": "Type", "orientation": "auto", "showValue": "always", "legend": { "showLegend": true, "displayMode": "list", "placement": "bottom" } }
+    },
+    {
+      "id": 9, "type": "barchart", "title": "Profil horaire (dernier jour calculé)",
+      "gridPos": { "x": 8, "y": 13, "w": 16, "h": 8 },
+      "datasource": { "type": "grafana-postgresql-datasource", "uid": "aeger-kpi" },
+      "targets": [ { "refId": "A", "format": "table", "rawQuery": true, "editorMode": "code",
+        "rawSql": "SELECT lpad(hour::text, 2, '0') || 'h' AS \"Heure\", nb_measures AS \"Mesures\", nb_alerts AS \"Alertes\" FROM kpi.hourly WHERE day = (SELECT max(day) FROM kpi.daily_summary) ORDER BY hour" } ],
+      "options": { "xField": "Heure", "orientation": "vertical", "showValue": "never", "legend": { "showLegend": true, "displayMode": "list", "placement": "bottom" } }
+    },
+    {
+      "id": 10, "type": "table", "title": "Patients avec le plus d'alertes (dernier jour calculé)",
+      "gridPos": { "x": 0, "y": 21, "w": 24, "h": 9 },
+      "datasource": { "type": "grafana-postgresql-datasource", "uid": "aeger-kpi" },
+      "targets": [ { "refId": "A", "format": "table", "rawQuery": true, "editorMode": "code",
+        "rawSql": "SELECT patient_id AS \"Patient\", CASE type WHEN 'high_risk' THEN 'Haut risque' ELSE 'Standard' END AS \"Type\", nb_alerts AS \"Alertes\", min_spo2 AS \"SpO2 min (%)\", max_heart_rate AS \"FC max (bpm)\" FROM kpi.top_patients WHERE day = (SELECT max(day) FROM kpi.daily_summary) ORDER BY nb_alerts DESC LIMIT 20" } ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+# Fins de ligne Unix (LF) partout : scripts, Dockerfile et configurations sont exécutés sous Linux (VM, conteneurs),
+# même quand le dépôt est cloné sous Windows.
+* text=auto eol=lf
+# scripts PowerShell : fins de ligne Windows
+*.ps1 text eol=crlf
+# fichiers binaires
+*.pdf binary
+*.png binary
+*.ico binary

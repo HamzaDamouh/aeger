@@ -1,0 +1,8 @@
+# ACL mosquitto AEGER (l'identité = CN du certificat client)
+
+# Le service ingestion lit les mesures de tous les bracelets
+user ingestion
+topic read aeger/vitals/#
+
+# Chaque bracelet haut risque n'écrit que dans son propre topic : aeger/vitals/hr-00042
+pattern write aeger/vitals/%u

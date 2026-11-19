@@ -1,25 +1,16 @@
-# Secret
-.env
-*.env
-*.pem
-*.key
-secrets/
-
-
-# Python
+# Dépendances et fichiers de compilation
+node_modules/
+dist/
+target/
+.angular/
 __pycache__/
 *.pyc
 .venv/
-.pytest_cache/
-.ruff_cache/
-.coverage
 
-# Node / React
-node_modules/
-dist/
-build/
-.npm/
+# Secrets et fichiers propres à une machine (jamais dans le dépôt)
+services/tier1-externe/capteur/certs/
+services/deploy/aeger.conf
+INFRASTRUCTURE VM/vms.json
 
-# IDE
-.vscode/
-.idea/
+# Configurations cloud-init et CD générés (python generer.py, creer-iso.ps1)
+INFRASTRUCTURE VM/_seed/
