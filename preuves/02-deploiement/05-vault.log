@@ -1,0 +1,27 @@
+[1;34m[13:18:13][0m Vault : démarrage sans TLS + bootstrap
+ Container vault  Creating
+ Container vault  Created
+ Container vault  Starting
+ Container vault  Started
+== initialisation (1 clé de déverrouillage : simplification de TP)
+Success! Enabled the pki secrets engine at: pki/
+Success! Tuned the secrets engine at: pki/
+Key                        Value
+---                        -----
+crl_distribution_points    [https://vm-sec-01:8200/v1/pki/crl]
+enable_templating          false
+issuing_certificates       [https://vm-sec-01:8200/v1/pki/ca]
+ocsp_servers               []
+== certificat de Vault créé : redémarrer le conteneur pour activer l'écoute TLS 8200
+Success! Enabled the kv-v2 secrets engine at: kv/
+== secrets générés dans kv/aeger/*
+Success! Enabled approle auth method at: approle/
+== Vault prêt : PKI, secrets, 11 AppRole
+[1;34m[13:18:42][0m Vault : redémarrage avec l'écoute TLS 8200
+ Container vault  Restarting
+ Container vault  Started
+[aeger] Vault déverrouillé
+2026-11-19T12:19:00.884Z [INFO]  identity: groups restored
+2026-11-19T12:19:00.885Z [INFO]  core: usage gauge collection is disabled
+2026-11-19T12:19:00.886Z [INFO]  core: post-unseal setup complete
+2026-11-19T12:19:00.886Z [INFO]  core: vault is unsealed

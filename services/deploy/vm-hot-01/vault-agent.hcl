@@ -34,7 +34,7 @@ template {
   destination = "/opt/aeger/secrets/mosquitto.pem"
   perms       = "0640"
   contents    = <<EOT
-{{- with pkiCert "pki/issue/mosquitto" "common_name=mosquitto" "alt_names=vm-hot-01,localhost,aeger.local" "ip_sans=10.0.30.11,127.0.0.1,192.168.56.10" "private_key_format=pkcs8" -}}
+{{- with pkiCert "pki/issue/mosquitto" "common_name=mosquitto" "alt_names=vm-hot-01,localhost,aeger.local" "ip_sans=10.0.30.11,127.0.0.1,172.31.249.218" "private_key_format=pkcs8" -}}
 {{ .Key }}
 {{ .Cert }}
 {{ .CA }}

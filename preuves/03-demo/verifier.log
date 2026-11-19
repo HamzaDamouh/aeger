@@ -1,0 +1,18 @@
+1. Connexion du médecin (Keycloak via NGINX)
+  [OK] jeton OIDC de medecin1 obtenu
+2. WebSocket des alertes (wss://…/ws/alerts)
+  [OK] WebSocket ouvert
+3. Mesures critiques -> alerte à l'écran
+  [OK] alerte P00042 (bracelet haut risque, MQTT) - CRITICAL en 0.46 s, raisons ['heart_rate', 'spo2']
+  [OK] alerte P01042 (bracelet standard, HTTPS) - CRITICAL en 0.81 s, raisons ['heart_rate', 'spo2', 'anomaly']
+4. API pour l'application web
+  [OK] GET /api/alerts/recent - HTTP 200, 7 alertes
+  [OK] GET /api/vitals/patients?q=P00042 - HTTP 200, 1 patient(s)
+  [OK] GET /api/vitals/patients/P00042/history - HTTP 200, 43 point(s)
+5. Sécurité
+  [OK] vitals sans jeton -> 401 - HTTP 401
+  [OK] notification avec un analyste (mauvais rôle) -> 403 - HTTP 403
+  hr-00001 : HTTPS 403
+  [OK] bracelet haut risque refusé sur l'API des bracelets standards
+
+Bilan : 10/10 vérifications réussies

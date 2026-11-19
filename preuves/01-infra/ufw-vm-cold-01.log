@@ -1,0 +1,46 @@
+Status: active
+
+     To                         Action      From
+     --                         ------      ----
+[ 1] 22/tcp on lan10            ALLOW IN    10.0.10.11                 # ADMIN ssh depuis le bastion (VM-EDGE-01)
+[ 2] 80,443/tcp on lan10        ALLOW FWD   10.0.20.0/24 on lan20      # I1 Internet du VLAN 20 via VM-EDGE-01
+[ 3] 10.0.10.11 53 on lan10     ALLOW FWD   10.0.20.0/24 on lan20      # I2 DNS du VLAN 20
+[ 4] 10.0.10.11 123/udp on lan10 ALLOW FWD   10.0.20.0/24 on lan20      # I2 NTP du VLAN 20
+[ 5] 10.0.20.0/24 22/tcp on lan20 ALLOW FWD   10.0.10.11 on lan10        # I4 SSH admin vers le VLAN 20
+[ 6] 80,443/tcp on lan10        ALLOW FWD   10.0.30.0/24 on lan30      # I1 Internet du VLAN 30 via VM-EDGE-01
+[ 7] 10.0.10.11 53 on lan10     ALLOW FWD   10.0.30.0/24 on lan30      # I2 DNS du VLAN 30
+[ 8] 10.0.10.11 123/udp on lan10 ALLOW FWD   10.0.30.0/24 on lan30      # I2 NTP du VLAN 30
+[ 9] 10.0.30.0/24 22/tcp on lan30 ALLOW FWD   10.0.10.11 on lan10        # I4 SSH admin vers le VLAN 30
+[10] 80,443/tcp on lan10        ALLOW FWD   10.0.40.0/24 on lan40      # I1 Internet du VLAN 40 via VM-EDGE-01
+[11] 10.0.10.11 53 on lan10     ALLOW FWD   10.0.40.0/24 on lan40      # I2 DNS du VLAN 40
+[12] 10.0.10.11 123/udp on lan10 ALLOW FWD   10.0.40.0/24 on lan40      # I2 NTP du VLAN 40
+[13] 10.0.40.0/24 22/tcp on lan40 ALLOW FWD   10.0.10.11 on lan10        # I4 SSH admin vers le VLAN 40
+[14] 80,443/tcp on lan10        ALLOW FWD   10.0.50.0/24 on lan50      # I1 Internet du VLAN 50 via VM-EDGE-01
+[15] 10.0.10.11 53 on lan10     ALLOW FWD   10.0.50.0/24 on lan50      # I2 DNS du VLAN 50
+[16] 10.0.10.11 123/udp on lan10 ALLOW FWD   10.0.50.0/24 on lan50      # I2 NTP du VLAN 50
+[17] 10.0.50.0/24 22/tcp on lan50 ALLOW FWD   10.0.10.11 on lan10        # I4 SSH admin vers le VLAN 50
+[18] 10.0.30.11 8883/tcp on lan30 ALLOW FWD   10.0.10.11 on lan10        # F04 VM-EDGE-01 -> VM-HOT-01: NGINX -> mosquitto
+[19] 10.0.30.11 8000/tcp on lan30 ALLOW FWD   10.0.10.11 on lan10        # F05 VM-EDGE-01 -> VM-HOT-01: NGINX -> ingestion
+[20] 10.0.30.12 8000/tcp on lan30 ALLOW FWD   10.0.10.11 on lan10        # F06 VM-EDGE-01 -> VM-HOT-02: NGINX -> notification
+[21] 10.0.30.13 8000/tcp on lan30 ALLOW FWD   10.0.10.11 on lan10        # F07 VM-EDGE-01 -> VM-HOT-03: NGINX -> vitals
+[22] 10.0.50.14 3000/tcp on lan50 ALLOW FWD   10.0.10.11 on lan10        # F08 VM-EDGE-01 -> VM-COLD-04: NGINX -> Grafana
+[23] 10.0.20.11 8443/tcp on lan20 ALLOW FWD   10.0.10.11 on lan10        # F09 VM-EDGE-01 -> VM-SEC-01: NGINX -> Keycloak
+[24] 10.0.20.11 8200/tcp on lan20 ALLOW FWD   10.0.10.11 on lan10        # F10 VM-EDGE-01 -> VM-SEC-01: NGINX -> Vault
+[25] 10.0.40.11 9093/tcp on lan40 ALLOW FWD   10.0.30.11 on lan30        # F11 VM-HOT-01 -> VM-KAFKA-01: ingestion -> Kafka
+[26] 10.0.40.11 9093/tcp on lan40 ALLOW FWD   10.0.30.12 on lan30        # F12 VM-HOT-02 -> VM-KAFKA-01: alerting -> Kafka
+[27] 10.0.40.11 9093/tcp on lan40 ALLOW FWD   10.0.30.13 on lan30        # F13 VM-HOT-03 -> VM-KAFKA-01: vitals -> Kafka
+[28] 10.0.40.12 5432/tcp on lan40 ALLOW FWD   10.0.30.13 on lan30        # F14 VM-HOT-03 -> VM-DB-01: vitals -> PostgreSQL
+[29] 10.0.40.12 5432/tcp on lan40 ALLOW FWD   10.0.20.11 on lan20        # F15 VM-SEC-01 -> VM-DB-01: Keycloak -> PostgreSQL
+[30] 10.0.40.11 9093/tcp on lan40 ALLOW FWD   10.0.50.13 on lan50        # F17 VM-COLD-03 -> VM-KAFKA-01: Spark -> Kafka
+[31] 10.0.40.12 5432/tcp on lan40 ALLOW FWD   10.0.50.13 on lan50        # F19 VM-COLD-03 -> VM-DB-01: Spark -> PostgreSQL
+[32] 10.0.40.12 5432/tcp on lan40 ALLOW FWD   10.0.50.14 on lan50        # F20 VM-COLD-04 -> VM-DB-01: Grafana -> PostgreSQL
+[33] 10.0.20.11 8443/tcp on lan20 ALLOW FWD   10.0.50.14 on lan50        # F21 VM-COLD-04 -> VM-SEC-01: Grafana -> Keycloak
+[34] 10.0.20.11 8200/tcp on lan20 ALLOW FWD   10.0.30.11 on lan30        # F22 VM-HOT-01 -> VM-SEC-01: Vault Agent -> Vault
+[35] 10.0.20.11 8200/tcp on lan20 ALLOW FWD   10.0.30.12 on lan30        # F22 VM-HOT-02 -> VM-SEC-01: Vault Agent -> Vault
+[36] 10.0.20.11 8200/tcp on lan20 ALLOW FWD   10.0.30.13 on lan30        # F22 VM-HOT-03 -> VM-SEC-01: Vault Agent -> Vault
+[37] 10.0.20.11 8200/tcp on lan20 ALLOW FWD   10.0.40.11 on lan40        # F22 VM-KAFKA-01 -> VM-SEC-01: Vault Agent -> Vault
+[38] 10.0.20.11 8200/tcp on lan20 ALLOW FWD   10.0.40.12 on lan40        # F22 VM-DB-01 -> VM-SEC-01: Vault Agent -> Vault
+[39] 10.0.20.11 8200/tcp on lan20 ALLOW FWD   10.0.50.12 on lan50        # F22 VM-COLD-02 -> VM-SEC-01: Vault Agent -> Vault
+[40] 10.0.20.11 8200/tcp on lan20 ALLOW FWD   10.0.50.13 on lan50        # F22 VM-COLD-03 -> VM-SEC-01: Vault Agent -> Vault
+[41] 10.0.20.11 8200/tcp on lan20 ALLOW FWD   10.0.50.14 on lan50        # F22 VM-COLD-04 -> VM-SEC-01: Vault Agent -> Vault
+

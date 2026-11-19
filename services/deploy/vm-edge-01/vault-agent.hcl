@@ -34,7 +34,7 @@ template {
   destination = "/opt/aeger/secrets/nginx.pem"
   perms       = "0640"
   contents    = <<EOT
-{{- with pkiCert "pki/issue/nginx" "common_name=nginx" "alt_names=vm-edge-01,localhost,aeger.local" "ip_sans=10.0.10.11,127.0.0.1,192.168.56.10" "private_key_format=pkcs8" -}}
+{{- with pkiCert "pki/issue/nginx" "common_name=nginx" "alt_names=vm-edge-01,localhost,aeger.local" "ip_sans=10.0.10.11,127.0.0.1,172.31.249.218" "private_key_format=pkcs8" -}}
 {{ .Key }}
 {{ .Cert }}
 {{ .CA }}

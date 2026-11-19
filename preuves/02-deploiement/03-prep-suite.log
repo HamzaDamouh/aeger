@@ -1,0 +1,5 @@
+[1;34m[13:13:04][0m vm-kafka-01 : Docker + /opt/aeger
+Docker version 29.1.3, build 29.1.3-0ubuntu3~22.04.2
+[1;34m[13:14:04][0m vm-db-01 : Docker + /opt/aeger
+Terminated
+Failed to restart docker.service: Unit docker.service not found.

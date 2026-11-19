@@ -1,0 +1,8 @@
+OK      vm-hot-01   -> 10.0.40.11         9093  ACCESSIBLE (aucun service pour l'instant) F11 autorise : VM-KAFKA-01 (ingestion -> Kafka, via VM-COLD-01)
+OK      vm-hot-01   -> 10.0.20.11         8200  ACCESSIBLE (aucun service pour l'instant) F22 autorise : VM-SEC-01 (Vault Agent -> Vault, via VM-COLD-01)
+OK      vm-hot-01   -> 10.0.40.12         5432  BLOQUE     (filtre)                      interdit : VM-DB-01 port 5432
+OK      vm-hot-01   -> 10.0.30.12         8000  BLOQUE     (filtre)                      interdit : VM-HOT-02 port 8000
+OK      vm-hot-01   -> 10.0.50.12         8333  BLOQUE     (filtre)                      interdit : VM-COLD-02 port 8333
+ERREUR  vm-hot-01   -> archive.ubuntu.com 80    BLOQUE     (filtre)                      I1 Internet via VM-COLD-01 et le NAT de VM-EDGE-01 (DNS de VM-EDGE-01)
+OK      vm-hot-01   -> archive.ubuntu.com 25    BLOQUE     (filtre)                      interdit : Internet hors 80/443
+== vm-hot-01 : 6 OK, 1 ERREUR
