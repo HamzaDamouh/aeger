@@ -14,3 +14,7 @@ INFRASTRUCTURE VM/vms.json
 
 # Configurations cloud-init et CD générés (python generer.py, creer-iso.ps1)
 INFRASTRUCTURE VM/_seed/
+
+#logs
+preuves/
+
