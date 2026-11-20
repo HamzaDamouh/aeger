@@ -1,4 +1,0 @@
-[1;34m[13:57:58][0m vm-cold-01 : image aeger/airflow
-Loaded image: aeger/airflow:1.0
-[1;34m[14:02:03][0m vm-cold-03 : image aeger/spark
-Loaded image: aeger/spark:1.0
